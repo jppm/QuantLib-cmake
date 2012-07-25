@@ -7,8 +7,7 @@ project ( QuantLib )
 
 set ( QuantLib_MAJOR_VERSION 1 CACHE STRING "QuantLib major version number." FORCE )
 set ( QuantLib_MINOR_VERSION 2 CACHE STRING "QuantLib minor version number." FORCE )
-set ( QuantLib_PATCH_VERSION 0 CACHE STRING "QuantLib patch version number." FORCE )
-set ( QuantLib_VERSION_STRING "${QuantLib_MAJOR_VERSION}.${QuantLib_MINOR_VERSION}.${QuantLib_PATCH_VERSION}" )                                                       
+set ( QuantLib_VERSION_STRING "${QuantLib_MAJOR_VERSION}.${QuantLib_MINOR_VERSION}" )
 
 #--------------------------------------------------
 # initial settings - cached
@@ -29,19 +28,20 @@ OPTION ( QuantLib_ENABLE_MSG_FUNCTIONS "Whether to print function names in error
 OPTION ( QuantLib_ENABLE_MSG_TRACING "Whether to print traces in error messages. Degrades performance." OFF )
 
 
-OPTION ( QuantLib_ENABLE_EXAMPLES "Whether to build and install examples." OFF )
+OPTION ( QuantLib_WITH_EXAMPLES "Whether to build and install examples." OFF )
 
-if ( QuantLib_ENABLE_EXAMPLES )
-  OPTION ( QuantLib_ENABLE_EXAMPLES_INSTALL_SHARE "Whether the examples binaries and respective sources shall be put in the share folder. When OFF, the binary goes to bin and the source is not copied." OFF )
+if ( QuantLib_WITH_EXAMPLES )
+  OPTION ( QuantLib_WITH_EXAMPLES_IN_SHARE "Whether the examples binaries and respective sources shall be put in the share folder. When OFF, the binaries go to bin and the source is not copied." OFF ) 
+  # default to OFF to retain current autotools behaviour
 endif ()
 
-OPTION ( QuantLib_ENABLE_BENCHMARK "Whether to build and install benchmarks." OFF )
+OPTION ( QuantLib_WITH_BENCHMARK "Whether to build and install benchmarks." OFF )
 
-# Benchmarks require boost unit test, which is linkable
-if ( QuantLib_ENABLE_BENCHMARK ) 
-  OPTION ( QuantLib_Boost_USE_STATIC_LIBS "Use the static Boost libraries" OFF )
-  OPTION ( QuantLib_Boost_USE_MULTITHREADED "Use the multithreaded Boost libraries" OFF )
-  OPTION ( QuantLib_Boost_USE_STATIC_RUNTIME "Searches for Boost libraries linked against a static C++ standard library (s ABI tag)." OFF )
+# Benchmarks require boost::unit_test_framework which must be linkable
+if ( QuantLib_WITH_BENCHMARK )
+  OPTION ( QuantLib_Boost_USES_MULTITHREADED "Use the multithreaded Boost libraries" OFF )
+  OPTION ( QuantLib_Boost_USES_STATIC_LIBS "Use the static Boost libraries" OFF )
+  OPTION ( QuantLib_Boost_USES_STATIC_RUNTIME "Searches for Boost libraries linked against a static C++ standard library (ABI tag s)." OFF )
 endif ()
 
 
@@ -59,34 +59,36 @@ set ( QuantLib_BENCHMARK_DIR   ${QuantLib_ROOT_DIR}/test-suite )
 set ( QuantLib_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} )
 
 #--------------------------------------------------
-# libraries 
+# third-party libraries
 
 set ( QuantLib_LIBRARIES )
 
 #--------------------------------
 # find BOOST - see http://www.cmake.org/cmake/help/cmake-2-8-docs.html#module:FindBoost
 
-set ( Boost_DEBUG FALSE )
+OPTION ( Boost_DEBUG "Whether to print debug info when cmake is looking for Boost" OFF )
 set ( Boost_DETAILED_FAILURE_MSG TRUE )
+
+set ( Boost_USE_MULTITHREADED ${QuantLib_Boost_USES_MULTITHREADED} )
+set ( Boost_USE_STATIC_LIBS ${QuantLib_Boost_USES_STATIC_LIBS} )
+set ( Boost_USE_STATIC_RUNTIME ${QuantLib_Boost_USES_STATIC_RUNTIME} )
+
 find_package ( Boost COMPONENTS ${qlbc} REQUIRED )
 list ( APPEND QuantLib_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} )
 list ( APPEND QuantLib_LIBRARIES ${Boost_LIBRARIES} )
 
 #---------------------------------------------------------
+# deal with configuration & system introspection
+
+include ( config.cmake )
+
+#---------------------------------------------------------
 # deal with the source files
 
-# to generate files.cmake, use the following cmd from the top dir:
+# to generate files.cmake, use the following cmd from the QuantLib top dir:
 # ( d=`pwd`/ql ; echo "set ( QuantLib_HEADERS " ; find $d -name "*.hpp" | sed "s:$d:  \${QuantLib_ROOT_DIR}/ql:g" | sort ; echo ")" ; echo ; echo ; echo "set(QuantLib_SOURCES " ; find $d -name "*.cpp" -o -name "*.c" | sed "s:$d:  \${QuantLib_ROOT_DIR}/ql:g" | sort ; echo ")" ; echo ) > files.cmake
 
 include ( files.cmake )
-
-#---------------------------------------------------------
-# deal with configuration & system introspection
-
-#---------------------------------------------------------
-# system introspection
-
-include ( config.cmake )
 
 #---------------------------------------------------------
 # create the library
@@ -118,7 +120,6 @@ if ( QuantLib_BUILD_STATIC )
   )
 endif ()
 
-
 # shared version -------------------------------------------
 if ( QuantLib_BUILD_SHARED )
   add_library ( QuantLib-shared SHARED ${QuantLib_SOURCES} ${QuantLib_HEADERS} )
@@ -144,14 +145,14 @@ install ( DIRECTORY ${QuantLib_SRC_DIR}
 #----------------------------------------------------------------------
 # examples
 
-if ( QuantLib_ENABLE_EXAMPLES )
+if ( QuantLib_WITH_EXAMPLES )
   add_subdirectory ( ${QuantLib_EXAMPLES_DIR} examples )
 endif ()
 
 #----------------------------------------------------------------------
 # benchmark
 
-if ( QuantLib_ENABLE_BENCHMARK )
+if ( QuantLib_WITH_BENCHMARK )
   add_subdirectory ( ${QuantLib_BENCHMARK_DIR} benchmark )
 endif ()
 

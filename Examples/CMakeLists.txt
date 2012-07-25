@@ -1,7 +1,8 @@
 # CMake build system for QuantLib 
 # 2012, Joao Paulo Magalhaes <jpmagalhaes@ist.utl.pt>
 
-add_custom_target ( examples )
+# provide a convenience target for building all examples
+add_custom_target ( QuantLib-examples )
 
 # use a macro to simplify things
 macro ( add_ql_example name )
@@ -17,7 +18,7 @@ macro ( add_ql_example name )
   add_executable ( ${ql_rname} ${ql_files} )
   set_target_properties ( ${ql_rname} PROPERTIES OUTPUT_NAME ${name} )
   target_link_libraries ( ${ql_rname} QuantLib-static )
-  add_dependencies ( examples ${ql_rname} )
+  add_dependencies ( QuantLib-examples ${ql_rname} )
   if ( QuantLib_ENABLE_EXAMPLES_INSTALL_SHARE )
     install ( TARGETS ${ql_rname} DESTINATION share/examples/${name} )
     install ( FILES ${ql_files} DESTINATION share/examples/${name} )
