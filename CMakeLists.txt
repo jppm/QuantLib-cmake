@@ -17,22 +17,37 @@ OPTION ( QuantLib_BUILD_STATIC "Build a static library." ON )
 OPTION ( QuantLib_BUILD_SHARED "Build a shared library." OFF )
 
 
-OPTION ( QuantLib_ENABLE_INDEXED_COUPONS "Use indexed coupons in a floating rate leg. Use par coupons otherwise." OFF )
-OPTION ( QuantLib_ENABLE_NEGATIVE_RATES "Allow negative yield rates in a few places where they are currently forbidden. It is still not clear whether this is safe." OFF )
-OPTION ( QuantLib_ENABLE_EXTRA_SAFETY_CHECKS "Add extra runtime checks to a few functions. This can prevent their inlining and degrade performance." OFF )
-OPTION ( QuantLib_ENABLE_DEPRECATED_CODE "Include deprecated code in the library." ON )
-OPTION ( QuantLib_ENABLE_SESSIONS "If enabled, singletons will return different instances for different sessions. You will have to provide and link with the library a sessionId() function in namespace QuantLib, returning a different session id for each session." OFF )
+OPTION ( QuantLib_ENABLE_INDEXED_COUPONS
+"Use indexed coupons in a floating rate leg.
+Use par coupons otherwise." OFF )
+OPTION ( QuantLib_ENABLE_NEGATIVE_RATES
+"Allow negative yield rates in a few places where they are
+currently forbidden. It is still not clear whether this is safe." OFF )
+OPTION ( QuantLib_ENABLE_EXTRA_SAFETY_CHECKS
+"Add extra runtime checks to a few functions. This can
+prevent their inlining and degrade performance." OFF )
+OPTION ( QuantLib_ENABLE_DEPRECATED_CODE
+"Include deprecated code in the library." ON )
+OPTION ( QuantLib_ENABLE_SESSIONS
+"If enabled, singletons will return different instances for different sessions.
+You will have to provide and link with the library a sessionId() function in
+namespace QuantLib, returning a different session id for each session." OFF )
 
 
-OPTION ( QuantLib_ENABLE_MSG_ERROR_LINES "Whether to print file and line info in error messages." OFF )
-OPTION ( QuantLib_ENABLE_MSG_FUNCTIONS "Whether to print function names in error messages." OFF )
-OPTION ( QuantLib_ENABLE_MSG_TRACING "Whether to print traces in error messages. Degrades performance." OFF )
-
+OPTION ( QuantLib_ENABLE_MSG_ERROR_LINES
+         "Whether to print file and line info in error messages." OFF )
+OPTION ( QuantLib_ENABLE_MSG_FUNCTIONS
+         "Whether to print function names in error messages." OFF )
+OPTION ( QuantLib_ENABLE_MSG_TRACING
+         "Whether to print traces in error messages. Degrades performance." OFF )
 
 OPTION ( QuantLib_WITH_EXAMPLES "Whether to build and install examples." OFF )
 
 if ( QuantLib_WITH_EXAMPLES )
-  OPTION ( QuantLib_WITH_EXAMPLES_IN_SHARE "Whether the examples binaries and respective sources shall be put in the share folder. When OFF, the binaries go to bin and the source is not copied." OFF ) 
+  OPTION ( QuantLib_WITH_EXAMPLES_IN_SHARE
+"Whether the examples binaries and respective sources shall be put
+in the share folder. When OFF, the binaries go to bin and the
+source is not copied." OFF )
   # default to OFF to retain current autotools behaviour
 endif ()
 
@@ -42,7 +57,8 @@ OPTION ( QuantLib_WITH_BENCHMARK "Whether to build and install benchmarks." OFF 
 if ( QuantLib_WITH_BENCHMARK )
   OPTION ( QuantLib_Boost_USES_MULTITHREADED "Use the multithreaded Boost libraries" OFF )
   OPTION ( QuantLib_Boost_USES_STATIC_LIBS "Use the static Boost libraries" OFF )
-  OPTION ( QuantLib_Boost_USES_STATIC_RUNTIME "Searches for Boost libraries linked against a static C++ standard library (ABI tag s)." OFF )
+  OPTION ( QuantLib_Boost_USES_STATIC_RUNTIME
+  "Searches for Boost libraries linked against a static C++ standard library (ABI tag s)." OFF )
 endif ()
 
 
