@@ -4,6 +4,7 @@
 cmake_minimum_required ( VERSION 2.8 )
 
 project ( QuantLib )
+set_property ( GLOBAL PROPERTY USE_FOLDERS ON )
 
 set ( QuantLib_MAJOR_VERSION 1 CACHE STRING "QuantLib major version number." FORCE )
 set ( QuantLib_MINOR_VERSION 2 CACHE STRING "QuantLib minor version number." FORCE )
@@ -90,6 +91,21 @@ include ( config.cmake )
 
 include ( files.cmake )
 
+# define a macro to create hierarchical source groups based on a dir tree
+macro ( create_source_group GroupPrefix RootDir ProjectSources  )
+  set ( DirSources ${ProjectSources} )
+  foreach ( Source ${DirSources} )
+    string ( REGEX REPLACE "${RootDir}" "" RelativePath "${Source}" )
+    string ( REGEX REPLACE "[\\\\/][^\\\\/]*$" "" RelativePath "${RelativePath}" )
+    string ( REGEX REPLACE "^[\\\\/]" "" RelativePath "${RelativePath}" )
+    string ( REGEX REPLACE "/" "\\\\\\\\" RelativePath "${RelativePath}" )
+    source_group ( "${GroupPrefix}\\${RelativePath}" FILES ${Source} )
+  endforeach ( Source )
+endmacro ( create_source_group )
+
+create_source_group ( "Header Files" ${QuantLib_SRC_DIR} "${QuantLib_HEADERS}" )
+create_source_group ( "Source Files" ${QuantLib_SRC_DIR} "${QuantLib_SOURCES}" )
+
 #---------------------------------------------------------
 # create the library
 
@@ -98,11 +114,13 @@ include_directories (
   ${QuantLib_INCLUDE_DIRS}
 )
 
-add_custom_target ( QuantLib )
-
 if ( NOT QuantLib_BUILD_STATIC AND NOT QuantLib_BUILD_SHARED ) 
   message ( ERROR "Must build at least one static or shared version" )
 endif ()
+
+# convenience target
+add_custom_target ( QuantLib )
+set_target_properties ( QuantLib PROPERTIES FOLDER "QuantLib" )
 
 # static version -------------------------------------------
 if ( QuantLib_BUILD_STATIC )
@@ -110,6 +128,7 @@ if ( QuantLib_BUILD_STATIC )
   set_target_properties ( QuantLib-static PROPERTIES
     VERSION ${QuantLib_VERSION_STRING}
     OUTPUT_NAME "QuantLib"
+	FOLDER "QuantLib"
   )
   target_link_libraries ( QuantLib-static ${QuantLib_LIBRARIES} )
   add_dependencies ( QuantLib QuantLib-static )
@@ -126,6 +145,7 @@ if ( QuantLib_BUILD_SHARED )
   set_target_properties ( QuantLib-shared PROPERTIES
     VERSION ${QuantLib_VERSION_STRING}
     OUTPUT_NAME "QuantLib"
+	FOLDER "QuantLib"
   )
   target_link_libraries ( QuantLib-shared ${QuantLib_LIBRARIES} )
   add_dependencies ( QuantLib QuantLib-shared )

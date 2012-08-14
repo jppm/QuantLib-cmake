@@ -12,14 +12,14 @@ include ( files.cmake )
 
 add_executable ( QuantLib-test-suite main.cpp ${QuantLib_TEST_SRCS} )
 set_target_properties ( QuantLib-test-suite PROPERTIES
- OUTPUT_NAME quantlib-test-suite )
+ OUTPUT_NAME quantlib-test-suite FOLDER "benchmark" )
 target_link_libraries ( QuantLib-test-suite QuantLib-static ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} )
 install ( TARGETS QuantLib-test-suite DESTINATION bin )
 
 
 add_executable ( QuantLib-benchmark main.cpp ${QuantLib_BENCHMARK_SRCS} )
 set_target_properties ( QuantLib-benchmark PROPERTIES
- OUTPUT_NAME quantlib-benchmark )
+ OUTPUT_NAME quantlib-benchmark FOLDER "benchmark" )
 target_link_libraries ( QuantLib-benchmark QuantLib-static ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} )
 install ( TARGETS QuantLib-benchmark DESTINATION bin )
 

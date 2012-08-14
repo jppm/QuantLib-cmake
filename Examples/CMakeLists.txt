@@ -3,6 +3,7 @@
 
 # provide a convenience target for building all examples
 add_custom_target ( QuantLib-examples )
+set_target_properties ( QuantLib-examples PROPERTIES FOLDER "examples" )
 
 # use a macro to simplify things
 macro ( add_ql_example name )
@@ -16,7 +17,10 @@ macro ( add_ql_example name )
     set ( ql_files ${ARGN} )
   endif ()
   add_executable ( ${ql_rname} ${ql_files} )
-  set_target_properties ( ${ql_rname} PROPERTIES OUTPUT_NAME ${name} )
+  set_target_properties ( ${ql_rname}
+	PROPERTIES
+	OUTPUT_NAME ${name}
+	FOLDER "examples" )
   target_link_libraries ( ${ql_rname} QuantLib-static )
   add_dependencies ( QuantLib-examples ${ql_rname} )
   if ( QuantLib_ENABLE_EXAMPLES_INSTALL_SHARE )
