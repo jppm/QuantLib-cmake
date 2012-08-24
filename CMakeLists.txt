@@ -178,6 +178,9 @@ install ( DIRECTORY ${QuantLib_SRC_DIR}
   FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
 )
 
+# don't forget this
+install ( FILES cmake/FindQuantLib.cmake DESTINATION share/cmake )
+
 #----------------------------------------------------------------------
 # examples
 

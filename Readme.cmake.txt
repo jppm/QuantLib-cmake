@@ -187,6 +187,27 @@ clean QuantLib tree. Nevertheless, I was able to have a tree with both build
 systems working.
 
 
+-----------------------------
+6. USING WITH THE ECLIPSE IDE
+-----------------------------
+
+When CMake generates a project for an IDE (or any project, for that matter),
+the project file is generated in the build dir (the dir from where cmake is
+called) rather than the source dir (the dir where the main CMakeLists.txt
+is located. When the build dir is a subdir of the source dir, this creates
+a problem with Eclipse, which does not allow CVS/SVN to work when the .project
+is not in the CVS/SVN root directory.
+
+To deal with this, CMake recommends to use a build dir which is a sibling
+of the source directory. This effectively solves the problem. This, however
+requires the user to have two QuantLib dirs side by side, which may not be desired.
+
+To address this, there is a CMake switch to create the .project in the
+ source dir: CMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT. For example, when the
+command line, the command to generate the Eclipse project becomes:
+
+cmake -G "Eclipse CDT4 - Unix Makefiles" -DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=ON ..
+
 
 
 
